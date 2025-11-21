@@ -50,7 +50,7 @@
         .precaution-item.active .precaution-steps { max-height: 500px; padding-top: 0.75rem; }
         input, select, textarea { background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary); }
         input:focus, select, textarea:focus { --tw-ring-color: var(--accent-color); }
-
+        
         /* Chat Animations */
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .chat-window { animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -87,11 +87,12 @@
         </header>
 
         <!-- TABS -->
-        <div class="flex border-b" style="border-color: var(--border-color);">
-            <button data-tab="metadata" class="tab-button tab-active flex-1 py-3 px-2 text-sm md:text-base font-medium transition-all duration-300 focus:outline-none" data-lang-key="tabMetadata">Metadata Remover</button>
-            <button data-tab="password" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium transition-all duration-300 focus:outline-none" data-lang-key="tabPassword">Password Checker</button>
-            <button data-tab="link" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium transition-all duration-300 focus:outline-none" data-lang-key="tabLink">Link Scanner</button>
-            <button data-tab="awareness" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium transition-all duration-300 focus:outline-none" data-lang-key="tabAwareness">Threat Awareness</button>
+        <div class="flex border-b overflow-x-auto" style="border-color: var(--border-color);">
+            <button data-tab="metadata" class="tab-button tab-active flex-1 py-3 px-2 text-sm md:text-base font-medium whitespace-nowrap transition-all duration-300 focus:outline-none" data-lang-key="tabMetadata">Metadata Remover</button>
+            <button data-tab="password" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium whitespace-nowrap transition-all duration-300 focus:outline-none" data-lang-key="tabPassword">Password Tools</button>
+            <button data-tab="encryption" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium whitespace-nowrap transition-all duration-300 focus:outline-none">Secure Message</button>
+            <button data-tab="link" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium whitespace-nowrap transition-all duration-300 focus:outline-none" data-lang-key="tabLink">Smart Pattern Scanner</button>
+            <button data-tab="awareness" class="tab-button flex-1 py-3 px-2 text-sm md:text-base font-medium whitespace-nowrap transition-all duration-300 focus:outline-none" data-lang-key="tabAwareness">Threat Awareness</button>
         </div>
 
         <div class="min-h-[450px] pt-6">
@@ -108,27 +109,133 @@
                 <div id="metadata-result" class="mt-4"></div>
             </div>
 
-            <!-- Password Tool -->
+            <!-- Password Tool (Generator + Checker) -->
             <div id="password-tool" class="tab-content hidden">
-                 <h2 class="text-xl font-semibold mb-2" data-lang-key="passwordTitle">Check Password Strength & Breaches</h2>
-                 <p style="color: var(--text-secondary);" class="mb-4 text-sm" data-lang-key="passwordDesc">See if your password is strong and if it has appeared in a known data breach. Your password is never sent to any server.</p>
-                 <div class="relative">
-                     <input type="password" id="password-input" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent" placeholder="Enter your password">
-                     <button id="toggle-password" type="button" class="absolute inset-y-0 right-0 px-4 text-[var(--text-secondary)]">
-                         <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
-                         <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2 2 0 012.828 2.828l1.515 1.515A4 4 0 0014 10a4 4 0 10-5.732-2.443z" clip-rule="evenodd" /><path d="M10.707 15.293a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 111.414-1.414l1.414 1.414a1 1 0 010 1.414zM4.458 10a9.953 9.953 0 001.325 3.971l1.515-1.515a4 4 0 015.424-5.424l1.515-1.515A9.953 9.953 0 0010 4.542 9.953 9.953 0 004.458 10z" /></svg>
-                     </button>
+                 <h2 class="text-xl font-semibold mb-2" data-lang-key="passwordTitle">Password Tools</h2>
+                 <p style="color: var(--text-secondary);" class="mb-6 text-sm" data-lang-key="passwordDesc">Generate strong passwords or check if an existing one has been compromised.</p>
+                 
+                 <!-- NEW PASSWORD GENERATOR SECTION -->
+                 <div class="mb-8 p-5 border rounded-xl bg-[var(--bg-primary)] shadow-sm relative overflow-hidden" style="border-color: var(--border-color);">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-[var(--accent-color)]"></div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-[var(--accent-color)] flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                            Generate Strong Password
+                        </h3>
+                    </div>
+
+                    <!-- Display & Copy -->
+                    <div class="flex gap-2 mb-4">
+                        <div class="relative flex-1">
+                            <input type="text" id="generated-password" readonly class="w-full px-4 py-3 border rounded-lg bg-[var(--bg-secondary)] font-mono text-lg tracking-wider text-center focus:outline-none" style="border-color: var(--border-color);" placeholder="Click generate...">
+                        </div>
+                        <button id="copy-password" title="Copy to Clipboard" class="px-4 bg-gray-200 dark:bg-gray-700 text-[var(--text-primary)] rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                            <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" /></svg>
+                        </button>
+                        <button id="generate-btn" title="Generate New" class="px-4 bg-[var(--accent-color)] text-white rounded-lg hover:bg-[var(--accent-hover)] transition-colors shadow-lg shadow-indigo-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="flex flex-wrap gap-4 text-sm text-[var(--text-secondary)] justify-center sm:justify-start items-center bg-[var(--bg-secondary)] p-3 rounded-lg border border-[var(--border-color)]">
+                        <div class="flex items-center w-full sm:w-auto">
+                            <span class="mr-2 font-medium">Length:</span>
+                            <input type="range" id="pass-length-slider" min="8" max="32" value="16" class="w-full sm:w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 mr-2 accent-[var(--accent-color)]">
+                            <span id="pass-length-val" class="font-mono font-bold text-[var(--accent-color)] w-6 text-center">16</span>
+                        </div>
+                        <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-2 hidden sm:block"></div>
+                        <label class="flex items-center cursor-pointer select-none hover:text-[var(--text-primary)]">
+                            <input type="checkbox" id="use-symbols" checked class="w-4 h-4 rounded border-gray-300 text-[var(--accent-color)] focus:ring-[var(--accent-color)] mr-2">
+                            Symbols (!@#)
+                        </label>
+                        <label class="flex items-center cursor-pointer select-none hover:text-[var(--text-primary)]">
+                            <input type="checkbox" id="use-numbers" checked class="w-4 h-4 rounded border-gray-300 text-[var(--accent-color)] focus:ring-[var(--accent-color)] mr-2">
+                            Numbers (123)
+                        </label>
+                    </div>
+                </div>
+
+                 <!-- Check Password Section -->
+                 <div class="pt-4 border-t" style="border-color: var(--border-color);">
+                     <h3 class="font-semibold mb-3">Check Breach Status</h3>
+                     <div class="relative">
+                         <input type="password" id="password-input" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent" placeholder="Enter a password to check...">
+                         <button id="toggle-password" type="button" class="absolute inset-y-0 right-0 px-4 text-[var(--text-secondary)]">
+                             <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                             <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2 2 0 012.828 2.828l1.515 1.515A4 4 0 0014 10a4 4 0 10-5.732-2.443z" clip-rule="evenodd" /><path d="M10.707 15.293a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 111.414-1.414l1.414 1.414a1 1 0 010 1.414zM4.458 10a9.953 9.953 0 001.325 3.971l1.515-1.515a4 4 0 015.424-5.424l1.515-1.515A9.953 9.953 0 0010 4.542 9.953 9.953 0 004.458 10z" /></svg>
+                         </button>
+                     </div>
+                     <button id="check-password-btn" class="w-full mt-4 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors" data-lang-key="passwordBtn">Check Password</button>
+                     <div id="password-result" class="mt-4"></div>
                  </div>
-                 <button id="check-password-btn" class="w-full mt-4 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors" data-lang-key="passwordBtn">Check Password</button>
-                 <div id="password-result" class="mt-4"></div>
             </div>
 
-            <!-- Link Tool -->
+            <!-- Secure Encryption Tool -->
+            <div id="encryption-tool" class="tab-content hidden">
+                <h2 class="text-xl font-semibold mb-2">AES-256 Secure Messaging</h2>
+                <p style="color: var(--text-secondary);" class="mb-6 text-sm">Encrypt a secret message using a password. The data is processed locally using the Web Crypto API and never leaves your device.</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Secret Password (Key)</label>
+                        <input type="password" id="crypto-key" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent" placeholder="Enter a shared secret password">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Input Text</label>
+                            <textarea id="crypto-input" rows="5" class="w-full px-4 py-2 border rounded-lg font-mono text-sm" placeholder="Type message to encrypt OR paste code to decrypt..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Output Result</label>
+                            <textarea id="crypto-output" rows="5" readonly class="w-full px-4 py-2 border rounded-lg bg-[var(--bg-primary)] font-mono text-sm" placeholder="Result will appear here..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button id="btn-encrypt" class="flex-1 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+                            Encrypt
+                        </button>
+                        <button id="btn-decrypt" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+                            Decrypt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Scanner Tool (Heuristic) -->
             <div id="link-tool" class="tab-content hidden">
-                 <h2 class="text-xl font-semibold mb-2" data-lang-key="linkTitle">Scan a Link for Threats</h2>
-                 <p style="color: var(--text-secondary);" class="mb-4 text-sm" data-lang-key="linkDesc">Check a URL for potential phishing or malware threats before you click. This is a simulation and does not use a live threat database.</p>
-                 <input type="text" id="link-input" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent" placeholder="https://example.com">
-                 <button id="scan-link-btn" class="w-full mt-4 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors" data-lang-key="linkBtn">Scan Link</button>
+                 <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-1" data-lang-key="linkTitle">Smart Pattern Scanner</h2>
+                    <p style="color: var(--text-secondary);" class="text-sm">Detects suspicious links and risky file types locally using pattern recognition.</p>
+                 </div>
+
+                 <!-- Tabs for Link vs File -->
+                 <div class="flex gap-2 mb-4">
+                     <button id="mode-link" class="flex-1 py-2 text-sm font-semibold rounded bg-[var(--accent-color)] text-white shadow">Scan URL</button>
+                     <button id="mode-file" class="flex-1 py-2 text-sm font-semibold rounded bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-gray-700">Scan File Type</button>
+                 </div>
+
+                 <!-- URL Input -->
+                 <div id="vt-url-section">
+                     <input type="text" id="link-input" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent font-mono text-sm" placeholder="https://example.com/login.php">
+                     <button id="scan-link-btn" class="w-full mt-4 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors">Analyze Link</button>
+                 </div>
+
+                 <!-- File Input -->
+                 <div id="vt-file-section" class="hidden">
+                    <label class="w-full cursor-pointer bg-[var(--bg-primary)] border-2 border-dashed border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center p-8 hover:bg-opacity-70 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[var(--text-secondary)] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <span class="text-sm font-medium text-[var(--text-primary)]">Select file to analyze</span>
+                        <input type="file" id="vt-file-input" class="hidden">
+                    </label>
+                    <div id="vt-file-name" class="text-xs text-center mt-2 text-[var(--text-secondary)]"></div>
+                    <button id="scan-file-btn" class="w-full mt-4 bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>Analyze File</button>
+                 </div>
+
                  <div id="link-result" class="mt-4"></div>
             </div>
             
@@ -136,28 +243,31 @@
             <div id="awareness-tool" class="tab-content hidden space-y-8">
                 <div>
                     <h2 class="text-xl font-semibold mb-2" data-lang-key="awarenessGameTitle">Scam Awareness Game & Alerts</h2>
-                    <p style="color: var(--text-secondary);" class="mb-4 text-sm" data-lang-key="awarenessGameDesc">Test your knowledge with real-world scenarios and stay updated on the latest threats.</p>
+                    <p style="color: var(--text-secondary);" class="mb-4 text-sm" data-lang-key="awarenessGameDesc">Test your knowledge with uniquely generated real-world scenarios.</p>
                     <div id="game-and-alert-content">
                         <div id="scam-alert-container" class="relative mb-4 p-4 rounded-lg" style="background-color: var(--amber-bg); border: 1px solid var(--amber-border);">
-                            <button id="refresh-alert-btn" title="Get new alert" class="absolute top-2 right-2 p-1 text-[var(--amber-text)] hover:bg-black/10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--amber-bg)] focus:ring-amber-500 transition-colors">
+                            <button id="refresh-alert-btn" title="Generate new AI alert" class="absolute top-2 right-2 p-1 text-[var(--amber-text)] hover:bg-black/10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--amber-bg)] focus:ring-amber-500 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0119.5 19.5M20 20l-1.5-1.5A9 9 0 004.5 4.5" /></svg>
                             </button>
                             <div class="flex items-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                                 <div id="scam-alert-content" class="pr-6">
-                                    <h3 id="scam-alert-title" class="font-bold" style="color: var(--amber-text);" data-lang-key="loadingAlert">Loading latest alert...</h3>
-                                    <p id="scam-alert-description" class="text-sm mt-1" style="color: var(--amber-text);"></p>
+                                    <h3 id="scam-alert-title" class="font-bold" style="color: var(--amber-text);" data-lang-key="loadingAlert">Generating AI Alert...</h3>
+                                    <p id="scam-alert-description" class="text-sm mt-1" style="color: var(--amber-text);">Please wait while the AI scans for the latest threat trends.</p>
                                 </div>
                             </div>
                         </div>
                         <div id="game-area" class="mt-6">
                             <div id="game-start-screen">
-                                <button id="start-game-btn" class="w-full bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors" data-lang-key="startGameBtn">Start Awareness Game</button>
+                                <button id="start-game-btn" class="w-full bg-[var(--accent-color)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors" data-lang-key="startGameBtn">Start AI Awareness Game</button>
                             </div>
                             <div id="game-question-screen" class="hidden">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h3 class="font-semibold" data-lang-key="scenarioTitle">Scenario</h3>
+                                    <h3 class="font-semibold" data-lang-key="scenarioTitle">Scenario (AI Generated)</h3>
                                     <p id="game-score" class="text-sm font-medium text-[var(--accent-color)] bg-opacity-10 bg-[var(--accent-color)] px-3 py-1 rounded-full"><span data-lang-key="scorePrefix">Score</span>: 0</p>
+                                </div>
+                                <div id="game-loading" class="hidden flex justify-center py-8">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent-color)]"></div>
                                 </div>
                                 <p id="game-scenario" class="bg-[var(--bg-primary)] p-4 rounded-lg border border-[var(--border-color)] mb-4 min-h-[100px]"></p>
                                 <div id="game-options" class="space-y-3"></div>
@@ -195,44 +305,12 @@
             <div class="bg-[var(--accent-color)] p-4 flex justify-between items-center text-white">
                 <div class="flex items-center gap-2">
                     <div id="ai-status-dot" class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <h3 class="font-semibold text-sm">Security Assistant (OpenRouter)</h3>
+                    <h3 class="font-semibold text-sm">Security Assistant</h3>
                 </div>
                 <div class="flex items-center space-x-1">
-                    <button id="settings-chat" class="hover:bg-white/20 rounded-full p-1 transition-colors" title="AI Settings">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
-                    </button>
                     <button id="close-chat" class="hover:bg-white/20 rounded-full p-1 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                     </button>
-                </div>
-            </div>
-            
-            <!-- Settings Screen (Hidden by default) -->
-            <div id="api-key-screen" class="absolute inset-0 bg-[var(--bg-secondary)] z-10 p-6 flex flex-col hidden mt-14 overflow-y-auto">
-                <h3 class="font-bold text-lg mb-2">AI Settings</h3>
-                <p class="text-xs text-[var(--text-secondary)] mb-4">Configure your free OpenRouter AI connection.</p>
-                
-                <label class="text-xs font-semibold mb-1">AI Model (Free)</label>
-                <select id="model-selector" class="w-full p-2 border rounded mb-4 text-sm bg-[var(--bg-primary)] text-[var(--text-primary)] border-[var(--border-color)]">
-                    <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
-                    <option value="google/gemini-2.0-flash-lite-preview-02-05:free">Google Gemini 2.0 Flash (Free)</option>
-                    <option value="meta-llama/llama-3.2-1b-instruct:free">Llama 3.2 1B (Fast & Free)</option>
-                    <option value="qwen/qwen-2.5-coder-32b-instruct:free">Qwen 2.5 Coder (Smart & Free)</option>
-                </select>
-
-                <label class="text-xs font-semibold mb-1">OpenRouter API Key</label>
-                <input type="password" id="api-key-input" class="w-full p-2 border rounded mb-2 text-sm" placeholder="Paste key here (starts with sk-or-...)">
-                
-                <div class="flex space-x-2 mb-2">
-                    <button id="save-api-key" class="flex-1 bg-[var(--accent-color)] text-white py-2 rounded font-semibold text-sm hover:bg-[var(--accent-hover)]">Save</button>
-                    <button id="test-connection" class="flex-1 bg-gray-500 text-white py-2 rounded font-semibold text-sm hover:bg-gray-600">Test Token</button>
-                </div>
-                
-                <button id="remove-api-key" class="w-full bg-red-100 text-red-600 py-2 rounded font-semibold text-sm mb-4 hover:bg-red-200 hidden">Remove Token</button>
-                
-                <div class="mt-auto text-xs text-[var(--text-secondary)] pt-4 border-t border-[var(--border-color)]">
-                    <a href="https://openrouter.ai/settings/keys" target="_blank" class="text-[var(--accent-color)] underline">Get a free key here &rarr;</a>
-                    <br>It works directly in the browser.
                 </div>
             </div>
 
@@ -240,11 +318,7 @@
             <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[var(--bg-primary)] text-sm">
                 <div class="flex flex-col space-y-2">
                     <div class="bg-[var(--chat-bg-bot)] text-[var(--text-primary)] p-3 rounded-lg rounded-tl-none self-start max-w-[90%] shadow-sm border border-[var(--border-color)]">
-                        Hi! I'm your security assistant.
-                        <br><br>
-                        To enable <b>Real AI Mode</b>, click the gear icon (⚙️) above and paste your <b>OpenRouter Key</b>.
-                        <br><br>
-                        Otherwise, I'll use simple keywords to guide you.
+                        Hi! I'm your security assistant. I can help you with passwords, phishing, and general security questions. Ask me anything!
                     </div>
                 </div>
             </div>
@@ -270,15 +344,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- EXISTING APP LOGIC (Translations, Theme, Tools) ---
+            // --- TRANSLATIONS ---
             const translations = {
                 en: {
                     title: "Digital Security Toolkit",
                     subtitle: "Simple tools to help you stay safe online.",
                     langToggle: "EN / HI",
                     tabMetadata: "Metadata Remover",
-                    tabPassword: "Password Checker",
-                    tabLink: "Link Scanner",
+                    tabPassword: "Password Tools",
+                    tabLink: "Smart Pattern Scanner",
                     tabAwareness: "Threat Awareness",
                     metadataTitle: "Remove Image Metadata",
                     metadataDesc: "Upload a photo to view its hidden data and download a clean, metadata-free version. Your photo is processed in your browser and is never uploaded.",
@@ -286,17 +360,17 @@
                     metadataFound: "Metadata Found (will be removed)",
                     downloadCleaned: "Download Cleaned Image",
                     noExif: "No EXIF data found in this image.",
-                    passwordTitle: "Check Password Strength & Breaches",
-                    passwordDesc: "See if your password is strong and if it has appeared in a known data breach. Your password is never sent to any server.",
+                    passwordTitle: "Password Tools",
+                    passwordDesc: "Generate strong passwords or check if an existing one has been compromised.",
                     passwordBtn: "Check Password",
-                    linkTitle: "Scan a Link for Threats",
-                    linkDesc: "Check a URL for potential phishing or malware threats before you click. This is a simulation and does not use a live threat database.",
-                    linkBtn: "Scan Link",
+                    linkTitle: "Smart Pattern Scanner",
+                    linkDesc: "Detects suspicious links and risky file types locally using pattern recognition.",
+                    linkBtn: "Analyze Link",
                     awarenessGameTitle: "Scam Awareness Game & Alerts",
-                    awarenessGameDesc: "Test your knowledge with real-world scenarios and stay updated on the latest threats.",
-                    loadingAlert: "Loading latest alert...",
-                    startGameBtn: "Start Awareness Game",
-                    scenarioTitle: "Scenario",
+                    awarenessGameDesc: "Test your knowledge with uniquely generated real-world scenarios.",
+                    loadingAlert: "Generating AI Alert...",
+                    startGameBtn: "Start AI Awareness Game",
+                    scenarioTitle: "Scenario (AI Generated)",
                     scorePrefix: "Score",
                     nextQuestionBtn: "Next Question",
                     playAgainBtn: "Play Again",
@@ -309,8 +383,8 @@
                     subtitle: "ऑनलाइन सुरक्षित रहने में आपकी मदद करने वाले सरल उपकरण।",
                     langToggle: "EN / HI",
                     tabMetadata: "मेटाडेटा रिमूवर",
-                    tabPassword: "पासवर्ड परीक्षक",
-                    tabLink: "लिंक स्कैनर",
+                    tabPassword: "पासवर्ड उपकरण",
+                    tabLink: "स्मार्ट पैटर्न स्कैनर",
                     tabAwareness: "खतरे की जागरूकता",
                     metadataTitle: "छवि मेटाडेटा हटाएं",
                     metadataDesc: "छिपे हुए डेटा को देखने और एक स्वच्छ, मेटाडेटा-मुक्त संस्करण डाउनलोड करने के लिए एक फोटो अपलोड करें। आपकी तस्वीर आपके ब्राउज़र में संसाधित होती है और कभी अपलोड नहीं होती है।",
@@ -318,12 +392,12 @@
                     metadataFound: "मेटाडेटा मिला (हटा दिया जाएगा)",
                     downloadCleaned: "साफ की गई छवि डाउनलोड करें",
                     noExif: "इस छवि में कोई EXIF ​​डेटा नहीं मिला।",
-                    passwordTitle: "पासवर्ड की ताकत और उल्लंघन की जाँच करें",
-                    passwordDesc: "देखें कि आपका पासवर्ड मजबूत है या नहीं और क्या यह किसी ज्ञात डेटा उल्लंघन में दिखाई दिया है। आपका पासवर्ड कभी भी किसी सर्वर पर नहीं भेजा जाता है।",
+                    passwordTitle: "पासवर्ड उपकरण",
+                    passwordDesc: "मजबूत पासवर्ड बनाएं या जांचें कि क्या मौजूदा पासवर्ड से समझौता किया गया है।",
                     passwordBtn: "पासवर्ड जांचें",
-                    linkTitle: "खतरों के लिए लिंक स्कैन करें",
-                    linkDesc: "क्लिक करने से पहले किसी भी संभावित फ़िशिंग या मैलवेयर खतरों के लिए URL की जाँच करें। यह एक सिमुलेशन है और लाइव थ्रेट डेटाबेस का उपयोग नहीं करता है।",
-                    linkBtn: "लिंक स्कैन करें",
+                    linkTitle: "स्मार्ट पैटर्न स्कैनर",
+                    linkDesc: "लिंक और फाइलों के संदिग्ध पैटर्न की स्थानीय रूप से जांच करता है।",
+                    linkBtn: "लिंक का विश्लेषण करें",
                     awarenessGameTitle: "घोटाला जागरूकता खेल और अलर्ट",
                     awarenessGameDesc: "वास्तविक दुनिया के परिदृश्यों के साथ अपने ज्ञान का परीक्षण करें और नवीनतम खतरों पर अपडेट रहें।",
                     loadingAlert: "नवीनतम अलर्ट लोड हो रहा है...",
@@ -352,13 +426,22 @@
                     }
                 });
                 renderPrecautionsList(); 
-                loadLatestScamAlert();
+                
+                // --- INTELLIGENT CONTENT UPDATE ---
+                // Only regenerate IF we have an active alert/game, keeping the SAME topic
+                if (currentAlertTopic) {
+                    loadLatestScamAlert(currentAlertTopic);
+                }
+                if (!gameStartScreen.classList.contains('hidden') === false && currentGameTopic) {
+                      loadNewScenario(currentGameTopic);
+                }
             };
             
             languageToggleBtn.addEventListener('click', () => {
                 setLanguage(currentLanguage === 'en' ? 'hi' : 'en');
             });
 
+            // --- THEME & UI SETUP (Existing) ---
             const themeToggleBtn = document.getElementById('theme-toggle');
             const lightIcon = document.getElementById('theme-icon-light');
             const darkIcon = document.getElementById('theme-icon-dark');
@@ -394,6 +477,7 @@
                 });
             });
 
+            // --- METADATA REMOVER LOGIC ---
             const imageUpload = document.getElementById('image-upload');
             const metadataResult = document.getElementById('metadata-result');
             const fileNameSpan = document.getElementById('file-name');
@@ -457,6 +541,81 @@
                 event.target.value = null;
             });
 
+            // --- 1. PASSWORD GENERATOR LOGIC ---
+            const genPassBtn = document.getElementById('generate-btn');
+            const copyPassBtn = document.getElementById('copy-password');
+            const copyIcon = document.getElementById('copy-icon');
+            const generatedInput = document.getElementById('generated-password');
+            const useSymbols = document.getElementById('use-symbols');
+            const useNumbers = document.getElementById('use-numbers');
+            const passLengthSlider = document.getElementById('pass-length-slider');
+            const passLengthVal = document.getElementById('pass-length-val');
+
+            // Update length display
+            passLengthSlider.addEventListener('input', (e) => {
+                passLengthVal.textContent = e.target.value;
+                generatePassword(); // Regenerate as you slide
+            });
+
+            // Checkbox listeners
+            useSymbols.addEventListener('change', generatePassword);
+            useNumbers.addEventListener('change', generatePassword);
+
+            function generatePassword() {
+                const lower = "abcdefghijklmnopqrstuvwxyz";
+                const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const nums = "0123456789";
+                const syms = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+                
+                let chars = lower + upper;
+                if (useNumbers.checked) chars += nums;
+                if (useSymbols.checked) chars += syms;
+
+                const length = parseInt(passLengthSlider.value);
+                let password = "";
+                const array = new Uint32Array(length);
+                
+                // SECURITY NOTE: This uses the browser's crypto engine, not Math.random()
+                window.crypto.getRandomValues(array); 
+
+                for (let i = 0; i < length; i++) {
+                    password += chars[array[i] % chars.length];
+                }
+                generatedInput.value = password;
+                
+                // Reset copy icon
+                copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" />`;
+                copyPassBtn.classList.remove('text-green-600', 'bg-green-100');
+            }
+
+            // Initial generation
+            generatePassword();
+
+            genPassBtn.addEventListener('click', () => {
+                // Add a tiny rotation animation to the icon
+                const svg = genPassBtn.querySelector('svg');
+                svg.style.transform = 'rotate(180deg)';
+                svg.style.transition = 'transform 0.3s ease';
+                setTimeout(() => svg.style.transform = 'rotate(0deg)', 300);
+                generatePassword();
+            });
+
+            copyPassBtn.addEventListener('click', () => {
+                if(!generatedInput.value) return;
+                navigator.clipboard.writeText(generatedInput.value);
+                
+                // Visual Feedback
+                copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`;
+                copyPassBtn.classList.add('text-green-600', 'bg-green-100');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" />`;
+                    copyPassBtn.classList.remove('text-green-600', 'bg-green-100');
+                }, 2000);
+            });
+
+            // --- PASSWORD CHECKER LOGIC ---
             const passwordInput = document.getElementById('password-input');
             const togglePasswordBtn = document.getElementById('toggle-password');
             const checkPasswordBtn = document.getElementById('check-password-btn');
@@ -524,29 +683,281 @@
                 } catch (error) { return null; }
             }
 
+             // --- 2. SECURE ENCRYPTION LOGIC (AES-GCM) ---
+            const cryptoKeyInput = document.getElementById('crypto-key');
+            const cryptoInput = document.getElementById('crypto-input');
+            const cryptoOutput = document.getElementById('crypto-output');
+            const btnEncrypt = document.getElementById('btn-encrypt');
+            const btnDecrypt = document.getElementById('btn-decrypt');
+
+            const getCryptoKey = async (password, salt, usage) => {
+                const enc = new TextEncoder();
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
+                );
+                return window.crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                    keyMaterial, { name: "AES-GCM", length: 256 }, false, usage
+                );
+            };
+
+            const arrayBufferToBase64 = (buffer) => {
+                let binary = '';
+                const bytes = new Uint8Array(buffer);
+                for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                return window.btoa(binary);
+            };
+
+            const base64ToArrayBuffer = (base64) => {
+                const binary_string = window.atob(base64);
+                const len = binary_string.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) bytes[i] = binary_string.charCodeAt(i);
+                return bytes.buffer;
+            };
+
+            btnEncrypt.addEventListener('click', async () => {
+                const password = cryptoKeyInput.value;
+                const text = cryptoInput.value;
+                if (!password || !text) return alert("Please enter a password and text.");
+
+                try {
+                    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+                    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                    const key = await getCryptoKey(password, salt, ["encrypt"]);
+                    const enc = new TextEncoder();
+                    
+                    const encryptedContent = await window.crypto.subtle.encrypt(
+                        { name: "AES-GCM", iv: iv }, key, enc.encode(text)
+                    );
+
+                    const result = `${arrayBufferToBase64(salt)}:${arrayBufferToBase64(iv)}:${arrayBufferToBase64(encryptedContent)}`;
+                    cryptoOutput.value = result;
+                } catch (e) {
+                    console.error(e);
+                    alert("Encryption failed.");
+                }
+            });
+
+            btnDecrypt.addEventListener('click', async () => {
+                const password = cryptoKeyInput.value;
+                const encryptedData = cryptoInput.value.trim();
+                if (!password || !encryptedData) return alert("Please enter password and encrypted code.");
+
+                try {
+                    const parts = encryptedData.split(':');
+                    if (parts.length !== 3) throw new Error("Invalid format");
+
+                    const salt = base64ToArrayBuffer(parts[0]);
+                    const iv = base64ToArrayBuffer(parts[1]);
+                    const ciphertext = base64ToArrayBuffer(parts[2]);
+
+                    const key = await getCryptoKey(password, salt, ["decrypt"]);
+                    
+                    const decryptedContent = await window.crypto.subtle.decrypt(
+                        { name: "AES-GCM", iv: iv }, key, ciphertext
+                    );
+
+                    const dec = new TextDecoder();
+                    cryptoOutput.value = dec.decode(decryptedContent);
+                } catch (e) {
+                    console.error(e);
+                    cryptoOutput.value = "Error: Decryption failed. Wrong password or corrupted data.";
+                }
+            });
+
+
+            // --- 3. SMART PATTERN SCANNER LOGIC (Heuristic) ---
+            const modeLinkBtn = document.getElementById('mode-link');
+            const modeFileBtn = document.getElementById('mode-file');
+            const vtUrlSection = document.getElementById('vt-url-section');
+            const vtFileSection = document.getElementById('vt-file-section');
+            
             const linkInput = document.getElementById('link-input');
             const scanLinkBtn = document.getElementById('scan-link-btn');
             const linkResult = document.getElementById('link-result');
-            scanLinkBtn.addEventListener('click', () => {
-                const url = linkInput.value.trim();
-                if (!url) {
-                    linkResult.innerHTML = `<div class="p-4 rounded-lg" style="background-color:var(--amber-bg); color:var(--amber-text); border:1px solid var(--amber-border);">Please enter a URL.</div>`;
-                    return;
-                }
-                linkResult.innerHTML = `<div class="flex items-center justify-center text-[var(--text-secondary)]"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent-color)]"></div><span class="ml-2">Scanning...</span></div>`;
-                setTimeout(() => {
-                    let resultHTML = '';
-                    if (url.includes('.xyz') || url.includes('.top')) {
-                        resultHTML = `<div class="p-4 rounded-lg" style="background-color:var(--red-bg); color:var(--red-text); border:1px solid var(--red-border);"><h4 class="font-bold">Potentially Unsafe</h4><p class="text-sm">This link has characteristics often associated with malicious websites.</p></div>`;
-                    } else if (!url.startsWith('https://')) {
-                        resultHTML = `<div class="p-4 rounded-lg" style="background-color:var(--amber-bg); color:var(--amber-text); border:1px solid var(--amber-border);"><h4 class="font-bold">Caution: Not Secure</h4><p class="text-sm">This link doesn't use a secure (HTTPS) connection.</p></div>`;
-                    } else {
-                        resultHTML = `<div class="p-4 rounded-lg" style="background-color:var(--green-bg); color:var(--green-text); border:1px solid var(--green-border);"><h4 class="font-bold">Looks Safe</h4><p class="text-sm">Our basic scan found no immediate signs of danger.</p></div>`;
-                    }
-                    linkResult.innerHTML = resultHTML;
-                }, 1000);
+            
+            const vtFileInput = document.getElementById('vt-file-input');
+            const vtFileName = document.getElementById('vt-file-name');
+            const scanFileBtn = document.getElementById('scan-file-btn');
+
+            // Toggle Modes
+            modeLinkBtn.addEventListener('click', () => {
+                modeLinkBtn.classList.add('bg-[var(--accent-color)]', 'text-white');
+                modeLinkBtn.classList.remove('bg-[var(--bg-primary)]', 'text-[var(--text-secondary)]');
+                modeFileBtn.classList.remove('bg-[var(--accent-color)]', 'text-white');
+                modeFileBtn.classList.add('bg-[var(--bg-primary)]', 'text-[var(--text-secondary)]');
+                vtUrlSection.classList.remove('hidden');
+                vtFileSection.classList.add('hidden');
+                linkResult.innerHTML = '';
             });
             
+            modeFileBtn.addEventListener('click', () => {
+                modeFileBtn.classList.add('bg-[var(--accent-color)]', 'text-white');
+                modeFileBtn.classList.remove('bg-[var(--bg-primary)]', 'text-[var(--text-secondary)]');
+                modeLinkBtn.classList.remove('bg-[var(--accent-color)]', 'text-white');
+                modeLinkBtn.classList.add('bg-[var(--bg-primary)]', 'text-[var(--text-secondary)]');
+                vtFileSection.classList.remove('hidden');
+                vtUrlSection.classList.add('hidden');
+                linkResult.innerHTML = '';
+            });
+
+            // Helper to render findings
+            const renderFindings = (score, findings) => {
+                let colorClass = 'green';
+                let title = 'Safe';
+                let desc = 'No obvious threats found in the pattern analysis.';
+
+                if (score >= 50) {
+                    colorClass = 'red';
+                    title = 'High Risk Detected';
+                    desc = 'This input shows multiple signs of being malicious.';
+                } else if (score > 0) {
+                    colorClass = 'amber';
+                    title = 'Suspicious';
+                    desc = 'Proceed with caution. Some patterns look risky.';
+                }
+
+                const bg = `var(--${colorClass}-bg)`;
+                const text = `var(--${colorClass}-text)`;
+                const border = `var(--${colorClass}-border)`;
+
+                let listHtml = findings.length > 0 
+                    ? `<ul class="list-disc list-inside mt-2 text-sm space-y-1">${findings.map(f => `<li>${f}</li>`).join('')}</ul>`
+                    : '';
+
+                linkResult.innerHTML = `
+                    <div class="p-4 rounded-lg" style="background-color:${bg}; color:${text}; border:1px solid ${border};">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg">${title}</h4>
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-white bg-opacity-50">Risk Score: ${score}/100</span>
+                        </div>
+                        <p class="text-sm mt-1">${desc}</p>
+                        ${listHtml}
+                    </div>
+                `;
+            };
+
+            // LINK ANALYSIS
+            scanLinkBtn.addEventListener('click', () => {
+                const url = linkInput.value.trim();
+                if (!url) return;
+                
+                linkResult.innerHTML = `<div class="flex items-center justify-center text-[var(--text-secondary)]"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent-color)]"></div><span class="ml-2">Analyzing...</span></div>`;
+
+                setTimeout(() => {
+                    let riskScore = 0;
+                    let findings = [];
+
+                    try {
+                        // Basic format check
+                        if (!url.startsWith('http')) {
+                            findings.push("Missing protocol (http/https).");
+                        }
+
+                        const urlObj = new URL(url.startsWith('http') ? url : `http://${url}`);
+                        const domain = urlObj.hostname.toLowerCase();
+
+                        // 1. Protocol Check
+                        if (urlObj.protocol === 'http:') {
+                            riskScore += 20;
+                            findings.push("Insecure connection (HTTP). Secure sites use HTTPS.");
+                        }
+
+                        // 2. IP Address Check
+                        if (/^(\d{1,3}\.){3}\d{1,3}$/.test(domain)) {
+                            riskScore += 50;
+                            findings.push("Host is a raw IP address. Legit sites usually have names.");
+                        }
+
+                        // 3. Risky TLDs
+                        const riskyTlds = ['.xyz', '.top', '.zip', '.mov', '.tk', '.ml', '.ga', '.cf', '.gq', '.ru', '.cn', '.download', '.review', '.country'];
+                        if (riskyTlds.some(tld => domain.endsWith(tld))) {
+                            riskScore += 30;
+                            findings.push(`Suspicious Top-Level Domain (TLD): ${domain.split('.').pop()}`);
+                        }
+
+                        // 4. Obfuscation
+                        if (url.includes('@')) {
+                            riskScore += 40;
+                            findings.push("Contains '@' symbol. This is often used to trick browsers.");
+                        }
+
+                        // 5. Length
+                        if (domain.length > 30) {
+                            riskScore += 10;
+                            findings.push("Unusually long domain name.");
+                        }
+
+                    } catch (e) {
+                        renderFindings(10, ["Invalid URL format."]);
+                        return;
+                    }
+
+                    renderFindings(riskScore, findings);
+                }, 800);
+            });
+
+            // FILE ANALYSIS
+            vtFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    vtFileName.textContent = file.name;
+                    scanFileBtn.disabled = false;
+                }
+            });
+
+            scanFileBtn.addEventListener('click', () => {
+                const file = vtFileInput.files[0];
+                if (!file) return;
+
+                linkResult.innerHTML = `<div class="flex items-center justify-center text-[var(--text-secondary)]"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent-color)]"></div><span class="ml-2">Analyzing File Pattern...</span></div>`;
+
+                setTimeout(() => {
+                    let riskScore = 0;
+                    let findings = [];
+                    const name = file.name.toLowerCase();
+                    const sizeMB = file.size / (1024 * 1024);
+
+                    // 1. Dangerous Extensions
+                    const dangerousExts = ['.exe', '.scr', '.bat', '.com', '.vbs', '.js', '.jar', '.msi', '.cmd', '.pif'];
+                    const ext = name.substring(name.lastIndexOf('.'));
+                    
+                    if (dangerousExts.includes(ext)) {
+                        riskScore += 60;
+                        findings.push(`High-risk file extension detected (${ext}). Executable files can install malware.`);
+                    }
+
+                    // 2. Double Extension Attack (e.g., invoice.pdf.exe)
+                    // Regex looks for: something . (3-4 chars) . (3-4 chars)
+                    if (/\.[a-z0-9]{3,4}\.[a-z0-9]{3,4}$/.test(name)) {
+                        riskScore += 80;
+                        findings.push("Double Extension detected! This file is trying to hide its true type (e.g. 'scan.pdf.exe').");
+                    }
+
+                    // 3. Windows Shortcuts (LNK)
+                    if (name.endsWith('.lnk')) {
+                        riskScore += 70;
+                        findings.push(".LNK file detected. Shortcuts are commonly used to run hidden powershell scripts.");
+                    }
+
+                    // 4. Office Macros (Macro-enabled)
+                    if (['.docm', '.xlsm', '.pptm'].includes(ext)) {
+                        riskScore += 40;
+                        findings.push("Macro-enabled Office document. Do not enable content unless you trust the source.");
+                    }
+
+                    // 5. Suspiciously small executables
+                    if (dangerousExts.includes(ext) && sizeMB < 0.1) {
+                        riskScore += 20;
+                        findings.push("Very small executable file. Malware loaders are often tiny.");
+                    }
+
+                    renderFindings(riskScore, findings);
+                }, 800);
+            });
+
+            // --- DYNAMIC SCAM GAME & ALERTS LOGIC (Hybrid AI + Local Fallback) ---
             const gameStartScreen = document.getElementById('game-start-screen');
             const gameQuestionScreen = document.getElementById('game-question-screen');
             const gameScoreEl = document.getElementById('game-score');
@@ -557,46 +968,151 @@
             const refreshAlertBtn = document.getElementById('refresh-alert-btn');
             const scamAlertTitleEl = document.getElementById('scam-alert-title');
             const scamAlertDescriptionEl = document.getElementById('scam-alert-description');
+            const gameLoading = document.getElementById('game-loading');
             
-            const scamScenarios = {
-                en: [
-                     { scenario: "SMS: 'Your bank account is locked. Verify at secure-bank-resolve.com.' What do you do?", options: [{ text: "Tap the link.", correct: false }, { text: "Call the official number on your bank card.", correct: true }, { text: "Delete the message.", correct: false }], explanation: "Correct! Never trust links in urgent texts. Always contact your bank through official channels." },
-                     { scenario: "A pop-up: 'WARNING! Your PC is infected! Call Microsoft at 1-800-123-4567!' What's the plan?", options: [{ text: "Call the number.", correct: false }, { text: "Click 'OK'.", correct: false }, { text: "Close the browser tab completely.", correct: true }], explanation: "That's the safe move. This is a classic tech support scam. Microsoft never asks you to call them via pop-ups." },
-                     { scenario: "You receive an email from 'Netflix' saying your account is suspended. The sender's email is 'support@net-flix-billing.com'. What should you do?", options: [{ text: "Click the link and enter card details.", correct: false }, { text: "Log in to Netflix directly from your browser to check.", correct: true }, { text: "Reply with your card number.", correct: false }], explanation: "Excellent! The sender's email is a red flag ('net-flix-billing.com' is not netflix.com). Always go directly to the official website." }
-                ],
-                hi: [
-                    { scenario: "एसएमएस: 'आपका बैंक खाता लॉक हो गया है। secure-bank-resolve.com पर सत्यापित करें।' आप क्या करेंगे?", options: [{ text: "लिंक पर टैप करें।", correct: false }, { text: "अपने बैंक कार्ड पर दिए गए आधिकारिक नंबर पर कॉल करें।", correct: true }, { text: "संदेश हटाएं।", correct: false }], explanation: "सही! अत्यावश्यक संदेशों में लिंक पर कभी भरोसा न करें। हमेशा आधिकारिक चैनलों के माध्यम से अपने बैंक से संपर्क करें।" },
-                    { scenario: "एक पॉप-अप: 'चेतावनी! आपका पीसी संक्रमित है! 1-800-123-4567 पर माइक्रोसॉफ्ट को कॉल करें!' क्या योजना है?", options: [{ text: "नंबर पर कॉल करें।", correct: false }, { text: "'ठीक है' पर क्लिक करें।", correct: false }, { text: "ब्राउज़र टैब को पूरी तरह से बंद करें।", correct: true }], explanation: "यह सुरक्षित कदम है। यह एक क्लासिक टेक सपोर्ट घोटाला है। माइक्रोसॉफ्ट कभी भी पॉप-अप के माध्यम से आपको कॉल करने के लिए नहीं कहता है।" },
-                    { scenario: "आपको 'Netflix' से एक ईमेल मिला है जिसमें कहा गया है कि आपका खाता निलंबित कर दिया गया है। प्रेषक का ईमेल 'support@net-flix-billing.com' है। आपको क्या करना चाहिए?", options: [{ text: "लिंक पर क्लिक करें और कार्ड विवरण दर्ज करें।", correct: false }, { text: "अपने खाते की जांच के लिए सीधे अपने ब्राउज़र से नेटफ्लिक्स में लॉग इन करें।", correct: true }, { text: "अपने क्रेडिट कार्ड नंबर के साथ उत्तर दें।", correct: false }], explanation: "बहुत बढ़िया! प्रेषक का ईमेल पता एक बड़ा खतरा है ('net-flix-billing.com' netflix.com नहीं है)। हमेशा आधिकारिक वेबसाइट पर सीधे जाएं।" }
-                ]
+            let score = 0;
+            let currentAlertTopic = null; // Store topic to persist across lang switches
+            let currentGameTopic = null; // Store topic to persist across lang switches
+
+            // Local Generators for Instant Fallback (EXPANDED FOR VARIETY)
+            const attackTypes = { 
+                en: ["Phishing Email", "Fake SMS", "Tech Support Call", "Malicious Ad", "Fake Wi-Fi", "QR Code Scam", "Fake Amazon Order", "Netflix Suspension", "IRS/Tax Audit", "Grandchild in Jail Call", "Crypto Wallet Drainer", "Fake Job Offer"], 
+                hi: ["फिशिंग ईमेल", "फर्जी एसएमएस", "टेक सपोर्ट कॉल", "दुर्भावनापूर्ण विज्ञापन", "फर्जी वाई-फाई", "क्यूआर कोड घोटाला", "फर्जी अमेज़न ऑर्डर", "नेटफ्लिक्स सस्पेंशन", "आयकर विभाग का नोटिस", "रिश्तेदार की मुसीबत कॉल", "क्रिप्टो वॉलेट चोरी", "फर्जी नौकरी का ऑफर"] 
             };
-            
-            let score, currentScenarioIndex, shuffledScenarios;
-            
+            const targets = { 
+                en: ["Bank Password", "Credit Card Number", "Social Security Number", "OTP", "Home Address", "UPI PIN", "Login Cookies", "Passport Details"], 
+                hi: ["बैंक पासवर्ड", "क्रेडिट कार्ड नंबर", "सामाजिक सुरक्षा नंबर", "ओटीपी", "घर का पता", "यूपीआई पिन", "लॉगिन कुकीज़", "पासपोर्ट विवरण"] 
+            };
+            const contexts = { 
+                en: ["claiming you won a lottery", "saying your account is locked", "offering a free gift", "demanding urgent payment", "asking to verify identity", "threatening legal action", "claiming a package is undelivered", "offering a refund"], 
+                hi: ["लॉटरी जीतने का दावा", "खाता लॉक होने की बात", "मुफ्त उपहार की पेशकश", "तत्काल भुगतान की मांग", "पहचान सत्यापित करने के लिए कहना", "कानूनी कार्रवाई की धमकी", "पैकेज वितरित न होने का दावा", "रिफंड की पेशकश"] 
+            };
+            const goodActions = { 
+                en: ["Delete and ignore", "Verify via official app", "Hang up and call bank", "Do not click links", "Report as spam", "Check URL carefully"], 
+                hi: ["हटाएं और अनदेखा करें", "आधिकारिक ऐप के माध्यम से सत्यापित करें", "फोन काट दें और बैंक को कॉल करें", "लिंक पर क्लिक न करें", "स्पैम के रूप में रिपोर्ट करें", "URL ध्यान से जांचें"] 
+            };
+            const badActions = { 
+                en: ["Click the link instantly", "Share the OTP", "Download the attachment", "Call the number provided", "Reply with personal info", "Pay the fee immediately"], 
+                hi: ["तुरंत लिंक पर क्लिक करें", "ओटीपी साझा करें", "अटैचमेंट डाउनलोड करें", "दिए गए नंबर पर कॉल करें", "व्यक्तिगत जानकारी के साथ उत्तर दें", "तुरंत शुल्क का भुगतान करें"] 
+            };
+
+            function generateLocalScenario(lang) {
+                const type = attackTypes[lang][Math.floor(Math.random() * attackTypes[lang].length)];
+                const target = targets[lang][Math.floor(Math.random() * targets[lang].length)];
+                const context = contexts[lang][Math.floor(Math.random() * contexts[lang].length)];
+                const correct = goodActions[lang][Math.floor(Math.random() * goodActions[lang].length)];
+                const wrong1 = badActions[lang][Math.floor(Math.random() * badActions[lang].length)];
+                const wrong2 = badActions[lang][Math.floor(Math.random() * badActions[lang].length)];
+                
+                const scenarioText = lang === 'hi' 
+                    ? `आपको एक ${type} प्राप्त होता है जो ${context} कर रहा है और आपका ${target} मांग रहा है।`
+                    : `You receive a ${type} ${context} asking for your ${target}.`;
+
+                return {
+                    scenario: scenarioText,
+                    options: [
+                        { text: wrong1, correct: false },
+                        { text: correct, correct: true },
+                        { text: wrong2, correct: false }
+                    ].sort(() => Math.random() - 0.5),
+                    explanation: lang === 'hi' ? "हमेशा आधिकारिक चैनलों के माध्यम से सत्यापित करें।" : "Always verify via official channels."
+                };
+            }
+
+            function generateLocalAlert(lang) {
+                const type = attackTypes[lang][Math.floor(Math.random() * attackTypes[lang].length)];
+                const context = contexts[lang][Math.floor(Math.random() * contexts[lang].length)];
+                return {
+                    title: `${type} Alert`,
+                    description: lang === 'hi' ? `सावधान रहें: हमलावर ${context} का उपयोग कर रहे हैं।` : `Be careful: Attackers are ${context}.`
+                };
+            }
+
             document.getElementById('start-game-btn').addEventListener('click', startGame);
             gameNextBtn.addEventListener('click', nextScenario);
             
-            function startGame() {
+            // Click listener for manual refresh (picks new topic)
+            refreshAlertBtn.addEventListener('click', () => loadLatestScamAlert());
+
+            // Helper to call AI specifically for JSON with language enforcement
+            async function fetchAIJSON(prompt, lang) {
+                try {
+                    // Add timestamp to ensure seed is always unique
+                    const uniqueSeed = Date.now() + Math.floor(Math.random() * 1000000);
+                    let langInstruction = "Keep values in English.";
+                    if (lang === 'hi') {
+                        langInstruction = "CRITICAL: Output values MUST be in Hindi (Devanagari script). Do not output English text for values.";
+                    }
+
+                    const finalPrompt = `${prompt} [UniqueSeed: ${uniqueSeed}] ${langInstruction} Respond ONLY with valid JSON. No markdown. Keys must be in English.`;
+                    
+                    const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(finalPrompt)}`);
+
+                    if (!response.ok) throw new Error("Network error");
+                    const text = await response.text();
+                    
+                    const jsonMatch = text.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) throw new Error("No JSON found");
+                    
+                    return JSON.parse(jsonMatch[0]);
+                } catch (e) {
+                    console.warn("AI Failed, using local generator.", e);
+                    return null;
+                }
+            }
+
+            async function startGame() {
                 score = 0;
-                currentScenarioIndex = 0;
-                shuffledScenarios = [...scamScenarios[currentLanguage]].sort(() => Math.random() - 0.5);
                 gameStartScreen.classList.add('hidden');
                 gameQuestionScreen.classList.remove('hidden');
                 gameNextBtn.innerText = translations[currentLanguage].nextQuestionBtn;
-                displayScenario();
+                await loadNewScenario();
             }
 
-            function displayScenario() {
-                gameScoreEl.innerHTML = `<span data-lang-key="scorePrefix">${translations[currentLanguage].scorePrefix}</span>: ${score}`;
+            async function loadNewScenario(specificTopic = null) {
+                gameLoading.classList.remove('hidden');
+                gameScenarioEl.classList.add('hidden');
+                gameOptionsEl.innerHTML = '';
                 gameFeedbackEl.innerHTML = '';
                 gameNextBtn.classList.add('hidden');
-                const currentScenario = shuffledScenarios[currentScenarioIndex];
-                gameScenarioEl.textContent = currentScenario.scenario;
-                gameOptionsEl.innerHTML = currentScenario.options.map(option => 
+
+                let scenarioData = null;
+
+                // Determine Topic (EXPANDED LIST)
+                const topics = [
+                    'phishing email', 'smishing (SMS scam)', 'vishing (voice scam)', 'malware download', 
+                    'ransomware attack', 'weak password', 'public wifi eavesdropping', 'social engineering', 
+                    'identity theft', 'fake online store', 'tech support scam', 'romance scam', 
+                    'CEO fraud', 'cryptocurrency drainer', 'fake job offer', 'QR code quishing', 
+                    'browser extension malware', 'fake antivirus', 'USB drive drop', 'cloud account takeover'
+                ];
+                
+                // Use provided topic (for translations) or pick new one
+                currentGameTopic = specificTopic || topics[Math.floor(Math.random() * topics.length)];
+                
+                const langPrompt = currentLanguage === 'hi' ? 'in Hindi' : 'in English';
+                
+                // More detailed prompt to force variety
+                const prompt = `Generate 1 unique and detailed cybersecurity scam quiz question ${langPrompt} about ${currentGameTopic}. Invent specific details (e.g. a fictional company name, specific threat context). Return JSON format: {"scenario": "detailed question text", "options": [{"text": "bad option A", "correct": false}, {"text": "good option B", "correct": true}, {"text": "bad option C", "correct": false}], "explanation": "short explanation"}`;
+                
+                scenarioData = await fetchAIJSON(prompt, currentLanguage);
+
+                // Fallback to Local Generator
+                if (!scenarioData || !scenarioData.scenario || !scenarioData.options) {
+                    scenarioData = generateLocalScenario(currentLanguage);
+                }
+
+                gameLoading.classList.add('hidden');
+                gameScenarioEl.classList.remove('hidden');
+                
+                gameScoreEl.innerHTML = `<span data-lang-key="scorePrefix">${translations[currentLanguage].scorePrefix}</span>: ${score}`;
+                gameScenarioEl.textContent = scenarioData.scenario;
+                gameOptionsEl.innerHTML = scenarioData.options.map(option => 
                     `<button class="w-full text-left p-3 border rounded-lg option-btn hover:bg-[var(--bg-primary)]" style="border-color:var(--border-color);">${option.text}</button>`
                 ).join('');
+                
                 gameOptionsEl.querySelectorAll('.option-btn').forEach((button, index) => {
-                    button.onclick = () => selectAnswer(shuffledScenarios[currentScenarioIndex].options[index], button, currentScenario.explanation);
+                    button.onclick = () => selectAnswer(scenarioData.options[index], button, scenarioData.explanation);
                 });
             }
 
@@ -604,51 +1120,51 @@
                 Array.from(gameOptionsEl.children).forEach(button => button.disabled = true);
                 btn.classList.add(option.correct ? 'correct' : 'incorrect');
                 if (option.correct) score++;
-                gameFeedbackEl.innerHTML = `<div class="p-3 rounded-md" style="background-color:${option.correct ? 'var(--green-bg)' : 'var(--red-bg)'}; color:${option.correct ? 'var(--green-text)' : 'var(--red-text)'}; border:1px solid ${option.correct ? 'var(--green-border)' : 'var(--red-border)'};"><p class="font-bold">${option.correct ? 'Correct!' : 'Not quite.'}</p><p class="text-sm">${explanation}</p></div>`;
+                
+                gameFeedbackEl.innerHTML = `<div class="p-3 rounded-md" style="background-color:${option.correct ? 'var(--green-bg)' : 'var(--red-bg)'}; color:${option.correct ? 'var(--green-text)' : 'var(--red-text)'}; border:1px solid ${option.correct ? 'var(--green-border)' : 'var(--red-border)'};"><p class="font-bold">${option.correct ? 'Correct!' : 'Incorrect'}</p><p class="text-sm">${explanation}</p></div>`;
                 gameScoreEl.innerHTML = `<span data-lang-key="scorePrefix">${translations[currentLanguage].scorePrefix}</span>: ${score}`;
                 gameNextBtn.classList.remove('hidden');
-                if (currentScenarioIndex >= shuffledScenarios.length - 1) {
-                    gameNextBtn.innerText = `${translations[currentLanguage].playAgainBtn}`;
+            }
+
+            async function nextScenario() {
+                 await loadNewScenario(); // Generates NEW topic
+            }
+
+            async function loadLatestScamAlert(specificTopic = null) {
+                // Only set loading text if it's a fresh load or manual refresh, not a translation switch
+                if (!specificTopic) {
+                    scamAlertTitleEl.textContent = "Loading...";
+                    scamAlertDescriptionEl.textContent = "...";
                 }
-            }
+                
+                // EXPANDED ALERT TOPICS
+                const alertTopics = [
+                    "AI Voice Cloning", "QR Code Fraud", "Fake Job Offers", "Romance Scams", 
+                    "Tech Support Fraud", "Package Delivery Smishing", "Crypto Investment Scams", 
+                    "Charity Fraud", "Social Media Impersonation", "Fake Wi-Fi Hotspots",
+                    "Ransomware", "Deepfake Video Calls", "SIM Swapping", "Fake Antivirus Popups", 
+                    "Tax Refund Scams", "Ticket Booking Scams", "Gaming Skin Theft", "Fake Loan Apps",
+                    "Lottery Fraud", "Sextortion Emails"
+                ];
+                
+                // Use existing topic if translating, else pick new one
+                currentAlertTopic = specificTopic || alertTopics[Math.floor(Math.random() * alertTopics.length)];
 
-            function nextScenario() {
-                currentScenarioIndex++;
-                if (currentScenarioIndex < shuffledScenarios.length) {
-                    displayScenario();
-                } else {
-                    showFinalScore();
+                const langPrompt = currentLanguage === 'hi' ? 'in Hindi' : 'in English';
+                // More specific prompt
+                const prompt = `Generate 1 realistic and specific cybersecurity scam alert about ${currentAlertTopic} ${langPrompt}. Include a specific tactic being used. Return JSON: {"title": "Short Title", "description": "One sentence description"}`;
+                
+                let alertData = await fetchAIJSON(prompt, currentLanguage);
+                
+                if (!alertData || !alertData.title) {
+                    alertData = generateLocalAlert(currentLanguage);
                 }
+                
+                scamAlertTitleEl.textContent = alertData.title;
+                scamAlertDescriptionEl.textContent = alertData.description;
             }
-
-            function showFinalScore() {
-                gameQuestionScreen.classList.add('hidden');
-                gameStartScreen.classList.remove('hidden');
-                const startGameButton = gameStartScreen.querySelector('button');
-                startGameButton.innerText = `${translations[currentLanguage].playAgainBtn} (${translations[currentLanguage].scorePrefix}: ${score}/${shuffledScenarios.length})`;
-            }
-
-            function loadLatestScamAlert() {
-                 const alerts = {
-                    en: [
-                        { title: "QR Code Payment Scam", description: "Scammers place fake QR codes over real ones on things like parking meters or rental bikes." },
-                        { title: "AI Voice Cloning Scam", description: "Scammers use AI to clone a loved one's voice, then call pretending to be in an emergency." },
-                        { title: "Fake Job Offer Scam", description: "You get a message offering a high-paying, remote job that requires you to pay for 'training' or 'supplies'." },
-                        { title: "'Missed Delivery' Smishing", description: "A text message claims a package delivery failed and you must click a link to reschedule, which steals your info."}
-                    ],
-                    hi: [
-                        { title: "क्यूआर कोड भुगतान घोटाला", description: "धोखेबाज पार्किंग मीटर या किराए की बाइक जैसी चीजों पर असली क्यूआर कोड के ऊपर नकली क्यूआर कोड स्टिकर लगा देते हैं।" },
-                        { title: "एआई वॉयस क्लोनिंग घोटाला", description: "धोखेबाज किसी प्रियजन की आवाज का क्लोन बनाने के लिए एआई का उपयोग करते हैं, फिर आपात स्थिति में होने का नाटक करके आपको फोन करते हैं।" },
-                        { title: "नकली नौकरी प्रस्ताव घोटाला", description: "आपको एक संदेश मिलता है जिसमें एक उच्च-भुगतान वाली, दूरस्थ नौकरी की पेशकश की जाती है जिसके लिए आपको 'प्रशिक्षण' या 'आपूर्ति' के लिए भुगतान करना पड़ता है।" },
-                        { title: "'मिस्ड डिलीवरी' स्मिशिंग", description: "एक टेक्स्ट संदेश का दावा है कि पैकेज डिलीवरी विफल हो गई है और आपको पुनर्निर्धारित करने के लिए एक लिंक पर क्लिक करना होगा, जो आपकी जानकारी चुरा लेता है।" }
-                    ]
-                };
-                const randomScam = alerts[currentLanguage][Math.floor(Math.random() * alerts[currentLanguage].length)];
-                scamAlertTitleEl.textContent = randomScam.title;
-                scamAlertDescriptionEl.textContent = randomScam.description;
-            }
-            refreshAlertBtn.addEventListener('click', loadLatestScamAlert);
             
+            // --- PRECAUTIONS LIST LOGIC (Existing) ---
             const precautionsListContainer = document.getElementById('precautions-list');
              function renderPrecautionsList() {
                  const precautionsData = {
@@ -688,39 +1204,13 @@
                 item.classList.toggle('active');
             });
 
-            // --- PROPER AI CHATBOT LOGIC (OpenRouter) ---
+            // --- PROPER AI CHATBOT LOGIC (Pollinations.ai) ---
             const toggleChatBtn = document.getElementById('toggle-chat');
             const chatWindow = document.getElementById('chat-window');
             const closeChatBtn = document.getElementById('close-chat');
-            const settingsChatBtn = document.getElementById('settings-chat');
             const chatInput = document.getElementById('chat-input');
             const sendChatBtn = document.getElementById('send-chat');
             const chatMessages = document.getElementById('chat-messages');
-            const apiKeyScreen = document.getElementById('api-key-screen');
-            const apiKeyInput = document.getElementById('api-key-input');
-            const saveApiKeyBtn = document.getElementById('save-api-key');
-            const removeApiKeyBtn = document.getElementById('remove-api-key');
-            const aiStatusDot = document.getElementById('ai-status-dot');
-            const testConnectionBtn = document.getElementById('test-connection');
-            const modelSelector = document.getElementById('model-selector');
-
-            // Load settings from storage
-            let orApiKey = localStorage.getItem('or_api_key');
-            let selectedModel = localStorage.getItem('or_model') || "mistralai/mistral-7b-instruct:free";
-            modelSelector.value = selectedModel;
-
-            const updateStatusUI = () => {
-                if (orApiKey) {
-                    apiKeyInput.value = orApiKey;
-                    removeApiKeyBtn.classList.remove('hidden');
-                    aiStatusDot.classList.remove('bg-red-400');
-                    aiStatusDot.classList.add('bg-green-400');
-                } else {
-                    aiStatusDot.classList.remove('bg-green-400');
-                    aiStatusDot.classList.add('bg-red-400');
-                }
-            };
-            updateStatusUI();
 
             toggleChatBtn.addEventListener('click', () => {
                 chatWindow.classList.toggle('hidden');
@@ -728,46 +1218,6 @@
             });
 
             closeChatBtn.addEventListener('click', () => chatWindow.classList.add('hidden'));
-            settingsChatBtn.addEventListener('click', () => apiKeyScreen.classList.toggle('hidden'));
-
-            modelSelector.addEventListener('change', (e) => {
-                selectedModel = e.target.value;
-                localStorage.setItem('or_model', selectedModel);
-            });
-
-            saveApiKeyBtn.addEventListener('click', () => {
-                const key = apiKeyInput.value.trim();
-                if (key) {
-                    orApiKey = key;
-                    localStorage.setItem('or_api_key', key);
-                    updateStatusUI();
-                    apiKeyScreen.classList.add('hidden');
-                    appendMessage("Key saved! AI is now active.", false);
-                }
-            });
-
-            removeApiKeyBtn.addEventListener('click', () => {
-                localStorage.removeItem('or_api_key');
-                orApiKey = null;
-                apiKeyInput.value = '';
-                removeApiKeyBtn.classList.add('hidden');
-                updateStatusUI();
-                appendMessage("Key removed. Reverting to basic mode.", false);
-            });
-
-            testConnectionBtn.addEventListener('click', async () => {
-                const originalText = testConnectionBtn.innerText;
-                testConnectionBtn.innerText = "Testing...";
-                testConnectionBtn.disabled = true;
-                const result = await callOpenRouterAPI("Hello! Are you working?");
-                testConnectionBtn.innerText = originalText;
-                testConnectionBtn.disabled = false;
-                if(result.includes("Error")) {
-                    alert(result);
-                } else {
-                    alert("Success! Connected to " + selectedModel);
-                }
-            });
 
             const appendMessage = (text, isUser) => {
                 const div = document.createElement('div');
@@ -776,7 +1226,11 @@
                     : `bg-[var(--chat-bg-bot)] text-[var(--text-primary)] p-3 rounded-lg rounded-tl-none self-start max-w-[85%] shadow-sm border border-[var(--border-color)] prose-sm`;
                 
                 if (!isUser && typeof marked !== 'undefined') {
-                    div.innerHTML = marked.parse(text);
+                    try {
+                        div.innerHTML = marked.parse(text);
+                    } catch (e) {
+                        div.innerText = text;
+                    }
                 } else {
                     div.innerText = text;
                 }
@@ -788,57 +1242,20 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             };
 
-            const getKeywordResponse = (input) => {
-                const lowerInput = input.toLowerCase();
-                if (lowerInput.includes("password")) return "Check the 'Password Checker' tab to see if your credentials are safe.";
-                if (lowerInput.includes("photo") || lowerInput.includes("meta")) return "Use the 'Metadata Remover' to strip location data from your images.";
-                if (lowerInput.includes("link") || lowerInput.includes("url")) return "Paste suspicious URLs into the 'Link Scanner' to check for threats.";
-                return "I can help you navigate this toolkit. Ask about passwords, links, or photo metadata. For complex questions, please add an OpenRouter Key in settings.";
-            };
-
-            // Call OpenRouter API
-            const callOpenRouterAPI = async (userText) => {
-                if (!orApiKey) return getKeywordResponse(userText);
-
+            // Call Pollinations.ai API (No Key Required)
+            const callPollinationsAI = async (userText) => {
                 try {
-                    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${orApiKey}`,
-                            "Content-Type": "application/json",
-                            "HTTP-Referer": window.location.href, 
-                            "X-Title": "Digital Security Toolkit"
-                        },
-                        body: JSON.stringify({
-                            "model": selectedModel,
-                            "messages": [
-                                { "role": "system", "content": "You are a helpful digital security assistant. Be concise. Use markdown." },
-                                { "role": "user", "content": userText }
-                            ]
-                        })
-                    });
+                    const encodedText = encodeURIComponent(`You are a helpful digital security assistant. Be comprehensive. User: ${userText}`);
+                    const response = await fetch(`https://text.pollinations.ai/${encodedText}`);
 
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errorMessage = errorData.error?.message || response.statusText;
-                        
-                        if (response.status === 401) return "Error 401: Invalid API Key. Please check settings.";
-                        if (response.status === 402) return "Error 402: Insufficient credits (even for free models). Check your OpenRouter account.";
-                        if (response.status === 429) return "Error 429: Rate limit exceeded. Try again later.";
-                        
-                        throw new Error(errorMessage);
-                    }
-
-                    const result = await response.json();
-                    if (result.choices && result.choices.length > 0) {
-                        return result.choices[0].message.content.trim();
-                    } else {
-                        return "The AI returned an empty response. Try asking differently.";
-                    }
+                    if (!response.ok) throw new Error("Network error");
+                    
+                    const text = await response.text();
+                    return text.trim();
 
                 } catch (error) {
                     console.error("AI Error Details:", error);
-                    return `Connection Error: ${error.message || "Network failed"}. Check internet or key.`;
+                    return "I'm having trouble connecting to the AI brain right now. Please check your internet connection.";
                 }
             };
 
@@ -858,7 +1275,7 @@
                 chatMessages.appendChild(wrapper);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                const response = await callOpenRouterAPI(text);
+                const response = await callPollinationsAI(text);
                 
                 chatMessages.removeChild(wrapper);
                 appendMessage(response, false);
@@ -875,6 +1292,8 @@
             });
 
             setLanguage(currentLanguage);
+            // Trigger initial alert generation on load
+            loadLatestScamAlert();
         });
     </script>
     
